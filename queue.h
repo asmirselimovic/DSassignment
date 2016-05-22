@@ -16,7 +16,6 @@ private:
 	size_t _size;
 	void copyQueue(const queue<Type>& otherQueue); //metod za kreiranje kopije reda
 public:
-	const queue<Type>& operator=(const queue<Type>&);
 	size_t size() const;
 	bool empty() const;	
 	void initializeQueue();
@@ -29,8 +28,32 @@ public:
 	void pop();
 	queue();
 	queue(const queue<Type>& otherQueue);
+  queue(queue<Type>&& queueElement);
+	queue& operator=(const queue<Type>&);
+	queue& operator=(queue<Type>&&);
 	~queue(); //Destruktor
 };
+
+template <typename Type>
+queue<Type>::queue(queue<Type>&& rhs) : head{rhs.head}, tail{rhs.tail}, _size{rhs._size}
+{
+  rhs.head = nullptr;
+  rhs.tail = nullptr;
+  rhs._size = 0;
+}
+
+template <typename Type>
+queue<Type>& queue<Type>::operator=(queue<Type>&& rhs)
+{
+  initializeQueue();
+  head = rhs.head;
+  head = rhs.tail;
+  head = rhs._size;
+  rhs.head = nullptr;
+  rhs.tail = nullptr;
+  rhs._size = 0;
+
+}
 
 template <typename Type>
 size_t queue<Type>::size() const {
@@ -46,7 +69,6 @@ template <typename Type>
 queue<Type>::~queue(){
 	initializeQueue();
 }
-
 
 template <typename Type>
 void queue<Type>::copyQueue(const queue<Type>& otherQueue)
@@ -74,7 +96,7 @@ queue<Type>::queue(const queue<Type>& otherQueue)
 }
 
 template <typename Type>
-const queue<Type>& queue<Type>::operator=(const queue<Type>& otherQueue)
+queue<Type>& queue<Type>::operator=(const queue<Type>& otherQueue)
 {
 	if (this != &otherQueue) 	//izbjegni samokopiranje
 		copyQueue(otherQueue);	//iskoristi funkciju za kopiranje
